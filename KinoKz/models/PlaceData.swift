@@ -14,11 +14,9 @@ struct Result: Codable {
         let cinemas: [Cinema]
 
         struct Cinema: Codable {
-            let id: Int
             let name: String
             let address: String
             let small_poster: String
-            let big_poster: String
         }
     }
 }

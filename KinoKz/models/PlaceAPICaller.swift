@@ -42,7 +42,7 @@ struct PlaceAPICaller {
             
             
             for place in result.pageProps.cinemas {
-                let placeModel = PlaceModel(id: place.id, name: place.name, address: place.address, smallPoster: place.small_poster, bigPoster: place.big_poster)
+                let placeModel = PlaceModel(name: place.name, address: place.address, smallPoster: place.small_poster)
                 placesList.append(placeModel)
             }
         } catch {

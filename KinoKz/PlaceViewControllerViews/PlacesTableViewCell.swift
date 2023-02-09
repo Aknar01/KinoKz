@@ -14,8 +14,6 @@ class PlacesTableViewCell: UITableViewCell {
         imageView.image = UIImage(named: "knives")
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-
         imageView.layer.cornerRadius = 15
         return imageView
     }()
