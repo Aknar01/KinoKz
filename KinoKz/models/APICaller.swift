@@ -17,29 +17,32 @@ struct APICaller {
     var delegate: ApiCallerDelegate?
     
     func fetchRequest() {
-        let urlString: String = Constans.Links.trendingUrl
-        guard let url = URL(string: urlString) else { fatalError("Incorrect link!") }
-        let task = URLSession.shared.dataTask(with: url) { data, _, error in
-            if let data, error == nil {
-                if let movieList = parseJSON(data) {
-                    delegate?.didUpdateMovieList(with: movieList)
+        for urlString in Constants.Values.urlList {
+            guard let url = URL(string: urlString) else { fatalError("Incorrect link!") }
+            let task = URLSession.shared.dataTask(with: url) { data, _, error in
+                if let data, error == nil {
+                    if let movieList = parseJSON(data) {
+                        delegate?.didUpdateMovieList(with: movieList)
+                    } else {
+                        delegate?.didFailWithError(error!)
+                    }
                 } else {
                     delegate?.didFailWithError(error!)
                 }
-            } else {
-                delegate?.didFailWithError(error!)
             }
+            task.resume()
         }
-        task.resume()
     }
     
     func parseJSON(_ data: Data) -> [MovieModel]? {
         var movieList: [MovieModel] = []
         do {
             let decodeData = try JSONDecoder().decode(MovieData.self, from: data)
-            for movie in decodeData.results {
-                let movieModel = MovieModel(adult: movie.adult, backdrop_path: movie.backdrop_path, id: movie.id, title: movie.title, overview: movie.overview, posterPath: movie.poster_path, mediaType: movie.media_type, genreIds: movie.genre_ids, releaseDate: movie.release_date, video: movie.video, voteAverage: movie.vote_average)
-                movieList.append(movieModel)
+            for model in decodeData.results {
+                if let backdropPath = model.backdrop_path {
+                    let movieModel = MovieModel(backdropPath: backdropPath, id: model.id, title: model.title, posterPath: model.poster_path, genreIds: model.genre_ids)
+                    movieList.append(movieModel)
+                }
             }
         } catch {
             print(error)
@@ -47,4 +50,18 @@ struct APICaller {
         }
         return movieList
     }
+    
+//    func parseGenreJSON(_ data: Data) -> [Int:String]? {
+//        var genreList: [Int:String] = [:]
+//        do {
+//            let decodeData = try JSONDecoder().decode(GenreData.self, from: data)
+//            for model in decodeData.genres {
+//                genreList[model.id] = model.name
+//            }
+//        } catch {
+//            print(error)
+//            return nil
+//        }
+//        return genreList
+//    }
 }

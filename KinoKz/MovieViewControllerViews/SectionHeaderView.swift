@@ -35,7 +35,7 @@ final class SectionHeaderView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setText(with text: String, number: Int) {
+    func configure(with text: String, number: Int) {
         categoryLabel.text = text
         allLabel.text = "All \(number)"
     }

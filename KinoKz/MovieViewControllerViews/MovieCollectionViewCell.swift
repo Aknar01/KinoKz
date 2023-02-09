@@ -52,6 +52,16 @@ final class MovieCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func configure(with model: MovieModel) {
+        guard let url = URL(string: "\(Constants.Links.image)\(model.posterPath)") else { fatalError("Incorrect configure!") }
+        let stringGenres = model.genreIds.map{ String($0) }
+        DispatchQueue.main.async {
+            self.posterImageView.kf.setImage(with: url)
+            self.movieNameLabel.text = model.title
+            self.genresLabel.text = stringGenres.joined(separator: ", ")
+        }
+    }
 }
 
 //MARK: - Setup views and constraints methods
@@ -76,7 +86,7 @@ private extension MovieCollectionViewCell {
         movieNameLabel.snp.makeConstraints { make in
             make.top.equalTo(posterImageView.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.height.equalToSuperview().multipliedBy(0.15)
+            make.height.equalToSuperview().multipliedBy(0.2)
         }
         genresLabel.snp.makeConstraints { make in
             make.top.equalTo(movieNameLabel.snp.bottom)
