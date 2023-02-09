@@ -10,7 +10,6 @@ import UIKit
 class PlacesTableViewCell: UITableViewCell {
 
     private lazy var placeImageView: UIImageView = {
-//        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
         let imageView = UIImageView()
         imageView.image = UIImage(named: "knives")
         imageView.contentMode = .scaleAspectFill
