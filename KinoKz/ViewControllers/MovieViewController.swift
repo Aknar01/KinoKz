@@ -12,6 +12,7 @@ final class MovieViewController: UIViewController {
     
     var apiCaller = APICaller()
     var allMoviesList: [[MovieModel]] = []
+    var genreList: [Int:String] = [:]
     
     private let scrollView = UIScrollView()
     private let contentView = UIView()
@@ -57,7 +58,8 @@ final class MovieViewController: UIViewController {
         super.viewDidLoad()
         
         apiCaller.delegate = self
-        apiCaller.fetchRequest()
+        apiCaller.fetchRequest(.movie)
+        apiCaller.fetchRequest(.genre)
         
         view.backgroundColor = .systemBackground
         
@@ -77,17 +79,20 @@ final class MovieViewController: UIViewController {
 //MARK: - API Caller delegate methods
 
 extension MovieViewController: ApiCallerDelegate {
-    func didUpdateMovieList(with movieList: [MovieModel]) {
+    func didUpdateAllMovieList(with movieList: [MovieModel]) {
         self.allMoviesList.append(movieList)
         DispatchQueue.main.async {
-            self.categoryCollectionView.reloadData()
             self.trendingCollectionView.reloadData()
             self.categoryTableView.reloadData()
         }
     }
     
-    func didFailWithError(_ error: Error) {
-        print("Failer with, error: ", error)
+    func didUpdateGenreList(with genreList: [Int : String]) {
+        self.genreList = genreList
+        DispatchQueue.main.async {
+            self.trendingCollectionView.reloadData()
+            self.categoryTableView.reloadData()
+        }
     }
 }
 
@@ -121,7 +126,7 @@ extension MovieViewController: UICollectionViewDataSource {
     }
 }
 
-//MARK: - Collection view delegate methods
+//MARK: - Collection view delegate flow methods
 
 extension MovieViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -136,13 +141,18 @@ extension MovieViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-// TODO
-//extension MovieViewController: UICollectionViewDelegate {
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let cell = collectionView.cellForItem(at: indexPath)
-//        cell?.isSelected = true
-//    }
-//}
+//MARK: - Collection view delegate methods
+
+extension MovieViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == trendingCollectionView {
+            let vc = DetailsViewController()
+            vc.apiCaller = self.apiCaller
+            vc.configure(with: allMoviesList[0][indexPath.item].id)
+            navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+}
 
 //MARK: - Table view data source methods
 
@@ -167,7 +177,9 @@ extension MovieViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if allMoviesList.count == Constants.Values.urlList.count {
             let cell = tableView.dequeueReusableCell(withIdentifier: Constants.Identifiers.categoryTableViewCell, for: indexPath) as! CategoryTableViewCell
-            cell.configure(with: allMoviesList[indexPath.section + 1])
+            cell.apiCaller = apiCaller
+            cell.navigationController = navigationController
+            cell.configure(with: allMoviesList[indexPath.section + 1], and: genreList)
             return cell
         }
         return UITableViewCell()

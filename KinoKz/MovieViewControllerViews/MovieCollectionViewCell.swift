@@ -9,11 +9,12 @@ import UIKit
 
 final class MovieCollectionViewCell: UICollectionViewCell {
     
+    private var genreList: [Int:String] = [:]
+    
     private let wholeView = UIView()
     
     private lazy var posterImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "knives")
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 5
@@ -22,7 +23,6 @@ final class MovieCollectionViewCell: UICollectionViewCell {
     
     private lazy var movieNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Knives out 2: Glass Onion"
         label.font = UIFont.boldSystemFont(ofSize: label.font.pointSize)
         label.textColor = .label
         label.sizeToFit()
@@ -33,12 +33,11 @@ final class MovieCollectionViewCell: UICollectionViewCell {
     
     private lazy var genresLabel: UILabel = {
         let label = UILabel()
-        label.text = "Comedy, drama, thriller"
-        label.font = UIFont.systemFont(ofSize: 15)
         label.textColor = .systemGray2
         label.sizeToFit()
-        label.numberOfLines = 2
-        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.2
         return label
     }()
     
@@ -53,13 +52,17 @@ final class MovieCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with model: MovieModel) {
+    func configure(with model: MovieModel, and genreList: [Int:String]) {
+        self.genreList = genreList
+        var stringGenreList: [String] = []
+        for i in 0..<model.genreIds.count {
+            stringGenreList.append(genreList[model.genreIds[i]] ?? "")
+        }
         guard let url = URL(string: "\(Constants.Links.image)\(model.posterPath)") else { fatalError("Incorrect configure!") }
-        let stringGenres = model.genreIds.map{ String($0) }
         DispatchQueue.main.async {
             self.posterImageView.kf.setImage(with: url)
             self.movieNameLabel.text = model.title
-            self.genresLabel.text = stringGenres.joined(separator: ", ")
+            self.genresLabel.text = stringGenreList.joined(separator: ", ")
         }
     }
 }

@@ -9,7 +9,11 @@ import UIKit
 
 final class CategoryTableViewCell: UITableViewCell {
 
+    var apiCaller: APICaller?
+    var navigationController: UINavigationController?
+
     private var movieList: [MovieModel] = []
+    private var genreList: [Int:String] = [:]
     
     private lazy var movieCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -34,8 +38,9 @@ final class CategoryTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with movieList: [MovieModel]) {
+    func configure(with movieList: [MovieModel], and genreList: [Int:String]) {
         self.movieList = movieList
+        self.genreList = genreList
         DispatchQueue.main.async {
             self.movieCollectionView.reloadData()
         }
@@ -51,7 +56,7 @@ extension CategoryTableViewCell: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.Identifiers.movieCollectionViewCell, for: indexPath) as! MovieCollectionViewCell
-        cell.configure(with: movieList[indexPath.row])
+        cell.configure(with: movieList[indexPath.row], and: genreList)
         return cell
     }
     
@@ -63,6 +68,15 @@ extension CategoryTableViewCell: UICollectionViewDelegateFlowLayout{
         let height = collectionView.frame.height
         
         return CGSize(width: height / 2, height: height)
+    }
+}
+
+extension CategoryTableViewCell: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let vc = DetailsViewController()
+        vc.apiCaller = self.apiCaller
+        vc.configure(with: movieList[indexPath.item].id)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 

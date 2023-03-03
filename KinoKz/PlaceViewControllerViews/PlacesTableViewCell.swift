@@ -11,7 +11,6 @@ class PlacesTableViewCell: UITableViewCell {
 
     private lazy var placeImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "knives")
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 15
@@ -20,23 +19,19 @@ class PlacesTableViewCell: UITableViewCell {
     
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Knives out 2: Glass Onion"
         label.font = UIFont.boldSystemFont(ofSize: label.font.pointSize)
         label.textColor = .label
         label.sizeToFit()
-        label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 2
         return label
     }()
     
     private lazy var addressLabel: UILabel = {
         let label = UILabel()
-        label.text = "Comedy, drama, thriller"
         label.font = UIFont.systemFont(ofSize: 15)
         label.textColor = .systemGray2
         label.sizeToFit()
         label.numberOfLines = 2
-        label.lineBreakMode = .byWordWrapping
         return label
     }()
     

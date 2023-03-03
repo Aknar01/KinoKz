@@ -12,7 +12,7 @@ struct GenreData: Decodable {
     
     struct Genre: Decodable {
         let id: Int
-        let name: Int
+        let name: String
     }
 
 }

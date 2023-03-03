@@ -13,22 +13,13 @@ class PlaceViewController: UIViewController {
     var allPlacesList: [PlaceModel] = []
     
     private let categoryList = Category.allCases
-    
-    private lazy var movieSearchBar: UISearchBar = {
-        let searchBar = UISearchBar()
-        searchBar.searchBarStyle = .minimal
-        searchBar.placeholder = "Search"
-        searchBar.layer.cornerRadius = 20
-        searchBar.clipsToBounds = true
-        return searchBar
-    }()
 
     private lazy var placesTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.register(PlacesTableViewCell.self, forCellReuseIdentifier: Constants.Identifiers.placesTableViewCell)
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
-//        tableView.allowsSelection = false
+        tableView.allowsSelection = false
         return tableView
     }()
     
@@ -74,8 +65,6 @@ extension PlaceViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.Identifiers.placesTableViewCell, for: indexPath) as! PlacesTableViewCell
         cell.configure(with: allPlacesList[indexPath.row])
-        cell.selectionStyle = .none
-
         return cell
     }
     

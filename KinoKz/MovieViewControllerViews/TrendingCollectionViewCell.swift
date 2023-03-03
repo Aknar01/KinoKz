@@ -11,7 +11,6 @@ final class TrendingCollectionViewCell: UICollectionViewCell {
     
     private lazy var trendingImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "puss")
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
